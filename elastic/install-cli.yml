@@ -1,0 +1,25 @@
+---
+- name: Install OCP CLI
+  hosts: localhost
+  become: true
+  vars_files:
+    - vars/vars-ocp.yml
+  tasks:
+    - name: Download OpenShift CLI (oc) tarball for ARM
+      ansible.builtin.get_url:
+        url: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/{{ ocp_version }}/openshift-client-linux-arm64.tar.gz"
+        dest: /tmp/openshift-client-linux-arm64.tar.gz
+        mode: '0644'
+
+    - name: Extract OpenShift CLI tarball
+      ansible.builtin.unarchive:
+        src: /tmp/openshift-client-linux-arm64.tar.gz
+        dest: /tmp/
+        remote_src: true
+
+    - name: Move OpenShift CLI binary to /usr/local/bin
+      ansible.builtin.copy:
+        src: /tmp/oc
+        dest: /usr/local/bin/oc
+        mode: '0755'
+

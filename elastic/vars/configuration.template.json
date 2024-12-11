@@ -1,0 +1,21 @@
+{
+    "ocp": {
+        "version": "",
+        "host": "",
+        "username": "",
+        "password": ""
+    },
+    "es": {
+        "es_namespace":"",
+        "es_storageclass": "",
+        "es_storage": "",
+        "es_cluster": "",
+        "es_version": "",
+        "es_nodes": "",
+        "es_container_name": "",
+        "es_container_request_memory": "",
+        "es_container_request_cpu": "",
+        "es_container_limit_memory": "",
+        "es_container_limit_cpu": ""
+    }
+}

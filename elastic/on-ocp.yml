@@ -1,0 +1,169 @@
+---
+- name: Install Elastic Search on OCP
+  hosts: localhost
+  become: true
+  vars_files:
+    - vars/vars-ocp.yml
+    - vars/vars-es.yml
+    - vars/static-repo.yml
+  tasks:
+    - name: Login into oc cluster with user and password and host
+      register: ocp_login
+      ansible.builtin.command: oc login {{ ocp_host }} --insecure-skip-tls-verify --username={{ ocp_user }}
+        --password={{ ocp_password }}
+      changed_when: false
+
+    - name: Create  enviroment variables ES_NAMESPACE, STORAGECLASS, CLUSTER
+      ansible.builtin.set_fact:
+        ES_NAMESPACE: "{{ es_namespace }}"
+        STORAGECLASS: "{{ es_storageclass }}"
+        ES_CLUSTER: "{{ es_cluster }}"
+        ES_STORAGE: "{{ es_storage }}"
+        ES_VERSION: "{{ es_version }}"
+        ES_NODES: "{{ es_nodes }}"
+        ES_CONTAINER_NAME: "{{ es_container_name }}"
+        ES_CONTAINER_REQUEST_MEMORY: "{{ es_container_request_memory }}"
+        ES_CONTAINER_REQUEST_CPU: "{{ es_container_request_cpu }}"
+        ES_CONTAINER_LIMIT_MEMORY: "{{ es_container_limit_memory }}"
+        ES_CONTAINER_LIMIT_CPU: "{{ es_container_limit_cpu }}"
+
+    - name: Check if namespace exists
+      ansible.builtin.command: oc get namespace "{{ ES_NAMESPACE }}"
+      register: namespace_check
+      ignore_errors: true
+      changed_when: false
+
+    - name: Create a new namespace for ECK installation
+      ansible.builtin.command: oc create namespace "{{ ES_NAMESPACE }}"
+      when: namespace_check.rc != 0
+      changed_when: false
+
+    - name: Create ECK crds
+      ansible.builtin.command: oc apply -f {{ es_eck_crds }}
+      changed_when: false
+
+    - name: Create the ECK operator in a different namespace elastic-system.
+      ansible.builtin.command: oc apply -f {{ es_eck_operator }}
+      changed_when: false
+
+    - name: Render Elasticsearch template
+      ansible.builtin.template:
+        src: template/elastic-cluster.j2
+        dest: /tmp/elastic-cluster.yml
+        mode: '0600'
+      changed_when: false
+
+    - name: Create a Elasticsearch cluster with template file
+      ansible.builtin.command: oc apply -f /tmp/elastic-cluster.yml
+      changed_when: false
+
+    - name: Monitor Elasticsearch health and creation progress and check that the Elasticsearch pods are running
+      ansible.builtin.command: oc get elasticsearch -n "{{ ES_NAMESPACE }}" "{{ ES_CLUSTER
+        }}" -o jsonpath='{.status.health}'
+      register: es_phase
+      until: es_phase.stdout == "green"
+      retries: 15
+      delay: 30
+      changed_when: false
+
+    - name: Render Kibana template
+      ansible.builtin.template:
+        src: template/kibana-instance.j2
+        dest: /tmp/kibana.yml
+        mode: '0600'
+      changed_when: false
+
+    - name: Create a Kibana instance with template file
+      ansible.builtin.command: oc apply -f /tmp/kibana.yml
+      changed_when: false
+
+    - name: Monitor Kibana health and creation progress
+      ansible.builtin.command: oc get kibana -n "{{ ES_NAMESPACE }}" "{{ ES_CLUSTER }}"
+        -o jsonpath='{.status.health}'
+      register: kibana_heealth
+      until: kibana_heealth.stdout == "green"
+      retries: 15
+      delay: 30
+      changed_when: false
+
+    - name: Copy file into a tmp folder
+      ansible.builtin.copy:
+        src: /workspaces/scaffolding-infra/elastic/license/license.json
+        dest: /tmp/license.json
+        remote_src: true
+        mode: '0600'
+
+    - name: Check if eck-license secret exists
+      ansible.builtin.command: oc get secret eck-license -n elastic-system
+      register: secret_check
+      ignore_errors: true
+      changed_when: false
+
+
+    - name: Create a generic secret on OCP call eck-licence from file
+      ansible.builtin.command: oc create secret generic eck-license --from-file=/tmp/license.json -n elastic-system
+      when: secret_check.rc != 0
+      changed_when: false
+
+    - name: Label secret eck-license
+      ansible.builtin.command: oc label secret eck-license "license.k8s.elastic.co/scope"=operator -n elastic-system
+      changed_when: false
+
+    - name: Obtain password of Elasticsearch credentials
+      ansible.builtin.command: oc get secret -n "{{ ES_NAMESPACE }}" "{{ ES_CLUSTER }}-es-elastic-user" -o=jsonpath='{.data.elastic}'
+      register: es_password
+      changed_when: false
+
+    - name: Decode the base64-encoded password
+      ansible.builtin.set_fact:
+        es_password_decoded: "{{ es_password.stdout | b64decode }}"
+      changed_when: false
+
+
+    - name: Obtain IP address of Kibana service
+      ansible.builtin.command: oc get service -n "{{ ES_NAMESPACE }}" "{{ ES_CLUSTER }}-kb-http" -o jsonpath='{.spec.clusterIP}'
+      register: kibana_ip
+      changed_when: false
+
+    - name: Render route kibana template
+      ansible.builtin.template:
+        src: template/route-kibana.j2
+        dest: /tmp/route-kibana.yml
+        mode: '0600'
+      changed_when: false
+
+    - name: Render route Elastic template
+      ansible.builtin.template:
+        src: template/route-elastic.j2
+        dest: /tmp/route-elastic.yml
+        mode: '0600'
+      changed_when: false
+
+    - name: Create  kibana route from file
+      ansible.builtin.command: oc apply -f /tmp/route-kibana.yml -n  "{{ ES_NAMESPACE }}"
+      changed_when: false
+
+    - name: Create elastic route from file
+      ansible.builtin.command: oc apply -f /tmp/route-elastic.yml -n "{{ ES_NAMESPACE }}"
+      changed_when: false
+
+    - name: Print es_password_decoded
+      ansible.builtin.debug:
+        msg: "{{ es_password_decoded }}"
+
+    - name: Obtain the routes of installation
+      ansible.builtin.command: oc get routes -n "{{ ES_NAMESPACE }}"
+      register: routes
+      changed_when: false
+
+    - name: Combine the routes value and es_password_decoded into a single string
+      ansible.builtin.set_fact:
+        output_content: 'The routes are: {{ routes.stdout }} and the password is: {{ es_password_decoded
+          }}'
+      changed_when: false
+
+    - name: Write output_content value to file
+      ansible.builtin.copy:
+        content: "{{ output_content }}"
+        dest: /tmp/output_content.txt
+        mode: '0644'

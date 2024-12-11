@@ -1,0 +1,37 @@
+---
+- name: Install CPD CLI
+  hosts: localhost
+  become: true
+  tasks:
+    - name: Download CPD CLI
+      ansible.builtin.get_url:
+        url: https://github.com/IBM/cpd-cli/releases/download/v13.0.7/cpd-cli-darwin-EE-13.1.7.tgz
+        dest: /tmp/cpd-cli-darwin-EE-13.1.7.tgz
+    - name: Extract CPD CLI
+      ansible.builtin.unarchive:
+        src: /tmp/cpd-cli-darwin-EE-13.1.7.tgz
+        dest: /tmp
+        remote_src: true
+    - name: Update PATH
+      ansible.builtin.lineinfile:
+        path: /etc/profile
+        line: export PATH=$PATH:/tmp/cpd-cli-darwin-EE-13.1.7
+
+    - name: Download OpenShift CLI (oc) tarball for ARM
+      ansible.builtin.get_url:
+        url: "https://mirror.openshift.com/pub/openshift-v4/clients/ocp/4.14.9/openshift-client-linux-arm64.tar.gz"
+        dest: /tmp/openshift-client-linux-arm64.tar.gz
+        mode: '0644'
+
+    - name: Extract OpenShift CLI tarball
+      ansible.builtin.unarchive:
+        src: /tmp/openshift-client-linux-arm64.tar.gz
+        dest: /tmp/
+        remote_src: true
+
+    - name: Move OpenShift CLI binary to /usr/local/bin
+      ansible.builtin.copy:
+        src: /tmp/oc
+        dest: /usr/local/bin/oc
+        mode: '0755'
+
