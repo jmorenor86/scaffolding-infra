@@ -42,7 +42,7 @@
       ansible.builtin.command: oc apply -f {{ es_eck_crds }}
       changed_when: false
 
-    - name: Create the ECK operator in a different namespace elastic-system.
+    - name: Create the ECK operator in a different namespace elastic-system
       ansible.builtin.command: oc apply -f {{ es_eck_operator }}
       changed_when: false
 
