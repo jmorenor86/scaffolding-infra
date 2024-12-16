@@ -1,42 +1,4 @@
 {
     "license": {
-        "uid": "890c5f87-2fae-4168-b1a0-a5563b72f0f6",
-        "type": "enterprise_trial",
-        "issue_date_in_millis": 1697414400000,
-        "start_date_in_millis": 1697414400000,
-        "expiry_date_in_millis": 1798761599999,
-        "max_resource_units": 1,
-        "issued_to": "International Business Machines Corporation",
-        "issuer": "API",
-        "signature": "AAAABAAAAA1ZHowdVN+R6pGn5gHEAAABmC9ZN0hjZDBGYnVyRXpCOW5Bb3FjZDAxOWpSbTVoMVZwUzRxVk1PSmkxaktJRVl5MUYvUWh3bHZVUTllbXNPbzBUemtnbWpBbmlWRmRZb25KNFlBR2x0TXc2K2p1Y1VtMG1UQU9TRGZVSGRwaEJGUjE3bXd3LzRqZ05iLzRteWFNekdxRGpIYlFwYkJiNUs0U1hTVlJKNVlXekMrSlVUdFIvV0FNeWdOYnlESDc3MWhlY3hSQmdKSjJ2ZTcvYlBFOHhPQlV3ZHdDQ0tHcG5uOElCaDJ4K1hob29xSG85N0kvTWV3THhlQk9NL01VMFRjNDZpZEVXeUtUMXIyMlIveFpJUkk2WUdveEZaME9XWitGUi9WNTZVQW1FMG1DenhZU0ZmeXlZakVEMjZFT2NvOWxpZGlqVmlHNC8rWVVUYzMwRGVySHpIdURzKzFiRDl4TmM1TUp2VTBOUlJZUlAyV0ZVL2kvVk10L0NsbXNFYVZwT3NSU082dFNNa2prQ0ZsclZ4NTltbU1CVE5lR09Bck93V2J1Y3c9PQAAAQBEPZW9F4ee3phQvyBQ3NqFCj2t3y6KoRYPdaFkOjtlZhgl/YDXnFgtMHj6ZfJ13g6wjlzsukCj0e4YzpbuBXzeonj+2oEhkwcphrDPTB1ovNLszdH7F5eis6rVr3hNsOMmbaOpDONGpTb9AXF50/gzS6rMzuwO/5AEfVjeW8/gzslmCAG52mvKIx0qeKwKvdQBHB4tO7aMfrEPVFPajFTPSxQnMu13OiCv9G37svOXQf3q+HGtJMKbRYflTi1wHnh8O5SK4v2k7UvUqyrbO4awetHM/ZEnZJHxLp2LBjcK8mOO+jNCGKbIkSenkDi446eOT8vmSm3w5FDjYJquRXdc",
-        "cluster_licenses": [
-            {
-                "license": {
-                    "uid": "a7212b0e-339c-47f6-9b85-26f06779b377",
-                    "type": "platinum",
-                    "issue_date_in_millis": 1697414400000,
-                    "expiry_date_in_millis": 1798761599999,
-                    "max_nodes": 100,
-                    "issued_to": "International Business Machines Corporation",
-                    "issuer": "API",
-                    "signature": "AAAAAwAAAA2BzoXJrjUksTl58KF7AAABmC9ZN0hjZDBGYnVyRXpCOW5Bb3FjZDAxOWpSbTVoMVZwUzRxVk1PSmkxaktJRVl5MUYvUWh3bHZVUTllbXNPbzBUemtnbWpBbmlWRmRZb25KNFlBR2x0TXc2K2p1Y1VtMG1UQU9TRGZVSGRwaEJGUjE3bXd3LzRqZ05iLzRteWFNekdxRGpIYlFwYkJiNUs0U1hTVlJKNVlXekMrSlVUdFIvV0FNeWdOYnlESDc3MWhlY3hSQmdKSjJ2ZTcvYlBFOHhPQlV3ZHdDQ0tHcG5uOElCaDJ4K1hob29xSG85N0kvTWV3THhlQk9NL01VMFRjNDZpZEVXeUtUMXIyMlIveFpJUkk2WUdveEZaME9XWitGUi9WNTZVQW1FMG1DenhZU0ZmeXlZakVEMjZFT2NvOWxpZGlqVmlHNC8rWVVUYzMwRGVySHpIdURzKzFiRDl4TmM1TUp2VTBOUlJZUlAyV0ZVL2kvVk10L0NsbXNFYVZwT3NSU082dFNNa2prQ0ZsclZ4NTltbU1CVE5lR09Bck93V2J1Y3c9PQAAAQBLSle2xcB/wwSPTMU/xEyHM0nMCP3kDg8tiLdV2kCekiS9iaQenqo1i9+HYesvUP3sU4qD/NyN+y0XK1M46tcmxIA+4qBZ5MKKseJ9Tvcwkh5ETQCsRBJEQkEFn9KjD7LQUpykHW1Gj+TfZ7ViU0YzaDh6RS0X5PyXXyFDQUWqfAVG/tGNzhvrOWYBNb3SDU2NT1W4y1j61Y+e6XBGURM5gjTosEJkVECcsRFbL3qOAG5M0AUc2HNb6vnyzwYGnxmL7ox7lKekQYB9H8ya1EBwfMk+TFsSGfDXwe2fbduq+Y+qrXfv4S0EuBzh0R9PZy3e0f7nA1DIsPpGl+lPDQgT",
-                    "start_date_in_millis": 1697414400000
-                }
-            },
-            {
-                "license": {
-                    "uid": "ef02e061-e913-47ab-8a7f-d1dd5e7e58a9",
-                    "type": "enterprise",
-                    "issue_date_in_millis": 1697414400000,
-                    "expiry_date_in_millis": 1798761599999,
-                    "max_nodes": null,
-                    "max_resource_units": 1,
-                    "issued_to": "International Business Machines Corporation",
-                    "issuer": "API",
-                    "signature": "AAAABQAAAA2l2j2jdw6PZ50jVsYdAAAAIAo5/x6hrsGh1GqqrJmy4qgmEC7gK0U4zQ6q5ZEMhm4jAAABAFq2YEM3sYWSwPqH4TdtWGz6y/oOfWmmu2iNzolVwEruyEg2kNQUusd+k54y9X+xx1Szn1Q3cniY+rUA1SGLRc8HiLSQX/v+E6d3pKBFndISAUpYhTw/ldpZZk9Tltb2pj06m9jRmtcNSzEZglUO1+tXb9mDNwkW355Pb2N2jQaYMTHGogPFMRdLPp7dDqwq8rWomFDf8Xa/oMitz5ZZmXW7f3poMSFsIppR53+sJzWD28I8MwPXQO8WmdMOWsYmUh/doFcifZNjsttFuF/YiBWoICrdB6Vh52Lgiauei0AjuNKowH31nTA97c3vhy0oa5SIfFBcpfmQZ1Cyp1tXv5o=",
-                    "start_date_in_millis": 1697414400000
-                }
-            }
-        ]
     }
 }
