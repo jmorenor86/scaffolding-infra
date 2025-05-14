@@ -1,0 +1,19 @@
+metadata:
+  name: "X"
+image:
+  version: "X"
+
+clusterName: "X"
+
+env:
+  ingestionHost: "X"
+  ingestionPort: "X"
+  iamMode: "X"
+
+resources:
+  requests:
+    memory: "128Mi" 
+    cpu: "50m"  
+  limits:
+    memory: "256Mi" 
+    cpu: "100m"  

@@ -1,0 +1,24 @@
+---
+- name: Login to IBM Cloud
+  ansible.builtin.command: >
+    ibmcloud login --apikey {{ ibmcloud_login_api_key }}
+    -a {{ ibmcloud_login_api_endpoint }}
+    -r {{ ibmcloud_login_region }}
+  register: ibmcloud_login
+  changed_when: false
+
+- name: Switch IBM Cloud account (if provided)
+  ansible.builtin.command: "ibmcloud target -c {{ ibmcloud_login_account_id }}\n"
+  when: ibmcloud_login_account_id is defined
+  register: ibmcloud_target
+  changed_when: false
+
+- name: Target IBM Cloud resource group
+  ansible.builtin.command: "ibmcloud target -g {{ ibmcloud_login_resource_group }}\n"
+  register: ibmcloud_target_rg
+  changed_when: false
+  when: ibmcloud_login_resource_group is defined
+
+- name: Print result login
+  ansible.builtin.debug:
+    var: ibmcloud_target_rg

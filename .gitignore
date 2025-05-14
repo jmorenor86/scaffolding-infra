@@ -1,3 +1,4 @@
 /elastic/vars/configuration.json
 /elastic/vars/vars-ocp.yml
 elastic/license/license.json
+.ansible

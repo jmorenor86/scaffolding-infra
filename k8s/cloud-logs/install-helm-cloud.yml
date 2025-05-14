@@ -1,0 +1,64 @@
+---
+- name: Install helm chart into kluster k8s
+  hosts: localhost
+  roles:
+    - role: ibmcloud_login
+    - role: service_id
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - name: Read template yaml
+      ansible.builtin.slurp:
+        src: ./templates/template-log-values.yaml
+      register: metadata_raw
+
+    - name: Parser YAML 
+      ansible.builtin.set_fact:
+        metadata_content: "{{ metadata_raw['content'] | b64decode | from_yaml }}"
+
+    - name: Replace values YAML
+      ansible.builtin.set_fact:
+        updated_metadata: >
+          {{
+            metadata_content | combine({
+              'metadata': { 'name': metadata_name },
+              'image': { 'version': image_version },
+              'clusterName': cluster_name,
+              'env': {
+                'ingestionHost': ingestion_host,
+                'ingestionPort': ingestion_port,
+                'iamMode': iam_mode,
+                'iamApiKey': iam_api_key
+              }
+            }, recursive=True)
+          }}
+
+    - name: Write new yaml
+      ansible.builtin.copy:
+        content: "{{ updated_metadata | to_nice_yaml }}"
+        dest: ./templates/logs-values.yaml
+        mode: '0644'
+
+    - name: Get Config ibmcloud ks
+      register: config_ks
+      ansible.builtin.command: ibmcloud ks cluster config -c {{cluster_name}} 
+      changed_when: false
+
+    - name: Install logs-agent Helm chart in the  k8s cluster
+      ansible.builtin.command:
+        argv:
+          - helm
+          - install
+          - "logs-agent"
+          - "./templates/logs-agent-helm"
+          - "--version"
+          - "{{ image_version }}"
+          - "--values"
+          - "/workspaces/scaffolding-infra/k8s/cloud-logs/templates/logs-values.yaml"
+          - "-n"
+          - "ibm-observe"
+          - "--create-namespace"
+          - "--set"
+          - "secret.iamAPIKey={{ ibmcloud_login_api_key }}"
+      changed_when: false

@@ -18,7 +18,7 @@
     "--volume",
     "ansible-dev-tools-container-storage:/var/lib/containers"
   ],
-  "postCreateCommand": "microdnf install -y jq",
+"postCreateCommand": "/bin/bash .devcontainer/setup.sh",
   "customizations": {
     "vscode": {
       "extensions": [

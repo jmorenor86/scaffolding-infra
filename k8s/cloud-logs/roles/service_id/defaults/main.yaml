@@ -1,0 +1,3 @@
+service_id_name: logs
+service_id_description: Logs k8s for cloud logs module
+service_id_chart_version: "1.4.1"

@@ -1,0 +1,180 @@
+---
+- name: Connect to IBM Cloud using role
+  hosts: localhost
+  roles:
+    - role: ibmcloud_login
+  vars_files:
+    - vars.yml
+
+  tasks:
+    - name: Set the cr region-set global in IBM Cloud
+      ansible.builtin.command: 'ibmcloud cr region-set global '
+      changed_when: false
+
+    - name: Print cr images with --restrict ibm/observe/logger-agent-plugin
+      ansible.builtin.command: ibmcloud cr images --restrict ibm/observe/logger-agent-plugin
+      changed_when: false
+      register: cr_images
+
+    - name: Print images Container registry
+      ansible.builtin.debug:
+        msg: "{{ cr_images }}"
+
+    - name: List existing service IDs
+      ansible.builtin.command:
+        argv:
+          - ibmcloud
+          - iam
+          - service-ids
+          - "--output"
+          - json
+      register: service_ids_output
+      changed_when: false
+
+    - name: Find matching service IDs
+      ansible.builtin.set_fact:
+        matching_service_ids: "{{ service_id_list | selectattr('name', 'equalto', service_id_name) | list }}"
+      when: service_id_list is defined
+
+    - name: Set existing_service_id if match found
+      ansible.builtin.set_fact:
+        existing_service_id: "{{ matching_service_ids[0] }}"
+      when:
+        - matching_service_ids is defined
+        - matching_service_ids | length > 0
+
+
+    - name: Create service ID only if it does not exist
+      ansible.builtin.command:
+        argv:
+          - ibmcloud
+          - iam
+          - service-id-create
+          - "{{ service_id_name }}"
+          - "--description"
+          - "{{ service_id_description }}"
+          - "--output"
+          - json
+      register: service_id_create_output
+      when: existing_service_id is not defined
+      changed_when: "'id' in service_id_create_output.stdout"
+
+    - name: Set service_id fact (from existing or newly created)
+      ansible.builtin.set_fact:
+        service_id: >-
+          {{ existing_service_id
+            if existing_service_id is defined
+            else (service_id_create_output.stdout | from_json)
+          }}
+
+    - name: Debug final service ID
+      ansible.builtin.debug:
+        var: service_id
+
+    - name: Create IAM policy with role 'Sender' for service created
+      ansible.builtin.command:
+        argv:
+          - ibmcloud
+          - iam
+          - service-policy-create
+          - "{{ service_id.id }}"
+          - "--roles"
+          - "Sender"
+          - "--service-name"
+          - "{{ service_id_name }}"
+      changed_when: false
+      register: policy_create_output
+
+    - name: Create IAM policy with role 'Reader' for service created (Container Registry access)
+      ansible.builtin.command:
+        argv:
+          - ibmcloud
+          - iam
+          - service-policy-create
+          - "{{ service_id.id }}"
+          - "--roles"
+          - "Reader"
+          - "--service-name"
+          - "container-registry"
+      when: service_id is defined
+      register: policy_create_output
+      changed_when: policy_create_output.rc == 0
+
+
+
+    - name: List existing API keys for the service ID
+      ansible.builtin.command:
+        argv:
+          - ibmcloud
+          - iam
+          - service-api-keys
+          - "--service-id"
+          - "{{ service_id.id }}"
+          - "--output"
+          - json
+      register: existing_api_keys_output
+      changed_when: false
+
+    - name: Parse list of service IDs
+      ansible.builtin.set_fact:
+        service_id_list: "{{ service_ids_output.stdout | from_json }}"
+      when: service_ids_output.stdout | length > 0
+
+    - name: Search for existing service ID with name "{{ service_id_name }}"
+      ansible.builtin.set_fact:
+        existing_service_id: "{{ service_id_list | selectattr('name', 'equalto', service_id_name) | list | first | default(None) }}"
+      when: service_id_list is defined
+
+    - name: Create API key for service ID if it doesn't exist
+      ansible.builtin.command:
+        argv:
+          - ibmcloud
+          - iam
+          - service-api-key-create
+          - logs-ingestion-key
+          - "{{ service_id.id }}"
+          - "--description"
+          - "API key for service ID {{ service_id.id }} with permissions to send logs to the IBM Cloud Logs service"
+          - "--output"
+          - json
+      register: created_api_key_output
+      when: existing_api_key is not defined
+      changed_when: "'apikey' in created_api_key_output.stdout"
+
+    - name: Set final logs_ingestion_api_key fact (existing or newly created)
+      ansible.builtin.set_fact:
+        logs_ingestion_api_key: >-
+          {{
+            existing_api_key
+            if existing_api_key is defined
+            else (created_api_key_output.stdout | from_json)
+          }}
+
+    - name: Debug API key (masked)
+      ansible.builtin.debug:
+        msg: "API key for logs ingestion exists with ID: {{ logs_ingestion_api_key.id }}"
+
+    - name: Login to ICR using IBM Cloud IAM token
+      shell: |
+        export IAM_TOKEN=$(ibmcloud iam oauth-tokens --output json | jq -r .iam_token | cut -d " " -f2)
+        helm registry login -u iambearer -p $IAM_TOKEN icr.io
+      environment:
+        PATH: "{{ ansible_env.PATH }}:/usr/local/bin"
+      changed_when: false
+
+    - name: Execute helm pull
+      ansible.builtin.command:
+        cmd: >
+          helm pull oci://icr.io/ibm/observe/logs-agent-helm
+          --version {{ chart_version }}
+      args:
+        chdir: /workspaces/scaffolding-infra/k8s/cloud-logs/templates/
+      changed_when: false
+
+    - name: Extract the tarball using tar command
+      ansible.builtin.command:
+        cmd: >
+          tar -xvf logs-agent-helm-{{ chart_version }}.tgz
+      args:
+        chdir: /workspaces/scaffolding-infra/k8s/cloud-logs/templates/
+      changed_when: false
