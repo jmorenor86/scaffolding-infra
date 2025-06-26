@@ -7,20 +7,22 @@ export ES_NAMESPACE="elastic"
 export STORAGECLASS="ocs-storagecluster-ceph-rbd"
 export ES_CLUSTER="wxd"
 export ES_STORAGE="50Gi"
-export ES_VERSION="8.11.1"
+export ES_VERSION="9.0.3"
 export ES_NODES="3"
 export ES_CONTAINER_NAME="elasticsearch"
 export ES_CONTAINER_REQUEST_MEMORY="8Gi"
 export ES_CONTAINER_REQUEST_CPU="2"
 export ES_CONTAINER_LIMIT_MEMORY="8Gi"
 export ES_CONTAINER_LIMIT_CPU="8"
-export ES_ECK_CRDS="https://download.elastic.co/downloads/eck/2.9.0/crds.yaml"
-export ES_ECK_OPERATOR="https://download.elastic.co/downloads/eck/2.9.0/operator.yaml"
+export ES_ECK_CRDS="https://download.elastic.co/downloads/eck/3.0.0/crds.yaml"
+export ES_ECK_OPERATOR="https://download.elastic.co/downloads/eck/3.0.0/operator.yaml"
 export LICENSE_FILE="/Users/john/Documents/scaffolding-infra/elastic/license/license.json"
 
 
 # Login into OpenShift cluster
-oc login "$OCP_HOST" --insecure-skip-tls-verify --username="$OCP_USER" --password="$OCP_PASSWORD"
+# oc login "$OCP_HOST" --insecure-skip-tls-verify --username="$OCP_USER" --password="$OCP_PASSWORD"
+oc login --token=sha256~xxx --server=https://c100-e.eu-de.containers.cloud.ibm.com:30636
+
 
 # Check and create namespace if not exists
 if ! oc get namespace "$ES_NAMESPACE" &>/dev/null; then

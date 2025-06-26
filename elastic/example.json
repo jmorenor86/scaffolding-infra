@@ -1,0 +1,68 @@
+GET _ml/trained_models/.elser_model_2_linux-x86_64
+
+
+POST /search-elser-testing-internal-2/_search
+{
+  "query": {
+    "text_expansion": {
+      "ml.inference.content_expanded.predicted_value": {
+        "model_id": ".elser_model_2_linux-x86_64",
+        "model_text": "search and analytics"
+      }
+    }
+  }
+}
+
+GET /search-elser-testing-internal-2/_search
+{
+  "_source": [
+    "ml.inference.content_expanded.predicted_value",
+    "text_field"
+  ],
+  "size": 1
+}
+
+GET /search-elser-testing-internal-2/_search
+{
+  "query": {
+    "exists": {
+      "field": "ml.inference.content_expanded.predicted_value.analytics"
+    }
+  }
+}
+
+PUT /search-elser-testing-internal-2
+{
+  "mappings": {
+    "properties": {
+      "text_field": {
+        "type": "text"
+      },
+      "ml": {
+        "properties": {
+          "inference": {
+            "properties": {
+              "content_expanded": {
+                "properties": {
+                  "predicted_value": {
+                    "type": "rank_features"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+POST /search-elser-testing-internal-2/_doc?pipeline=search-elser-testing-internal-2@ml-inference
+{
+  "text_field": "Elasticsearch is a distributed, RESTful search and analytics engine capable of addressing a growing number of use cases. It allows you to store, search, and analyze large volumes of data quickly and in near real-time.",
+  "title": "Introduction to Elasticsearch",
+  "_extract_binary_content": false,
+  "_reduce_whitespace": true,
+  "_run_ml_inference": true
+}

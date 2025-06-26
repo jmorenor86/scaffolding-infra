@@ -8,6 +8,8 @@ spec:
   version: ${ES_VERSION}
   nodeSets:
     - name: default
+      config:
+        node.store.allow_mmap: false
       count: ${ES_NODES}
       volumeClaimTemplates:
         - metadata:

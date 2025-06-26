@@ -4,7 +4,7 @@ metadata:
   name: ${ES_CLUSTER}
   namespace: ${ES_NAMESPACE}
 spec:
-  version: 8.11.1
+  version: ${ES_VERSION}
   count: 3
   elasticsearchRef:
     name: ${ES_CLUSTER}
@@ -17,8 +17,8 @@ spec:
               value: "--max-old-space-size=2048"
           resources:
             requests:
-              memory: 1Gi
-              cpu: 0.5
+              memory: 512Mi
+              cpu: 200m
             limits:
-              memory: 2.5Gi
-              cpu: 2
+              memory: 1Gi
+              cpu: 500m
