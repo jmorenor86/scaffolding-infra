@@ -16,7 +16,7 @@ export ES_CONTAINER_LIMIT_MEMORY="8Gi"
 export ES_CONTAINER_LIMIT_CPU="8"
 export ES_ECK_CRDS="https://download.elastic.co/downloads/eck/3.0.0/crds.yaml"
 export ES_ECK_OPERATOR="https://download.elastic.co/downloads/eck/3.0.0/operator.yaml"
-export LICENSE_FILE="/Users/john/Documents/scaffolding-infra/elastic/license/license.json"
+export LICENSE_FILE="PATH_TO_LICENSE/license.json"
 
 
 # Login into OpenShift cluster

@@ -1,0 +1,35 @@
+apiVersion: elasticsearch.k8s.elastic.co/v1
+kind: Elasticsearch
+metadata:
+  name: ${ES_CLUSTER}
+  namespace: ${ES_NAMESPACE}
+spec:
+  volumeClaimDeletePolicy: DeleteOnScaledownOnly
+  version: ${ES_VERSION}
+  nodeSets:
+    - name: default
+      config:
+        node.store.allow_mmap: false
+      count: ${ES_NODES}
+      volumeClaimTemplates:
+        - metadata:
+            name: elasticsearch-data # Do not change this name unless you set up a volume mount for the data path.
+          spec:
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: ${ES_STORAGE}
+            storageClassName: ${STORAGECLASS}
+      podTemplate:
+        spec:
+          containers:
+            - name: ${ES_CONTAINER_NAME}
+              image: image-registry.openshift-image-registry.svc:5000/${ES_NAMESPACE}/elasticsearch:${ES_VERSION}
+              resources:
+                requests:
+                  memory: ${ES_CONTAINER_REQUEST_MEMORY}
+                  cpu: ${ES_CONTAINER_REQUEST_CPU}
+                limits:
+                  cpu: ${ES_CONTAINER_LIMIT_CPU}
+                  memory: ${ES_CONTAINER_LIMIT_MEMORY}

@@ -1,0 +1,25 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: ${ES_CLUSTER}
+  namespace: ${ES_NAMESPACE}
+spec:
+  version: ${ES_VERSION}
+  count: 3
+  elasticsearchRef:
+    name: ${ES_CLUSTER}
+  podTemplate:
+    spec:
+      containers:
+        - name: kibana
+          image: image-registry.openshift-image-registry.svc:5000/${ES_NAMESPACE}/kibana:${ES_VERSION}
+          env:
+            - name: NODE_OPTIONS
+              value: "--max-old-space-size=2048"
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 200m
+            limits:
+              memory: 1Gi
+              cpu: 500m
