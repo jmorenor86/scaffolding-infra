@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
         - name: kibana
-          image: image-registry.openshift-image-registry.svc:5000/${ES_NAMESPACE}/kibana:${ES_VERSION}
+          image: image-registry.openshift-image-registry.svc:5000/elastic/kibana:${ES_VERSION}
           env:
             - name: NODE_OPTIONS
               value: "--max-old-space-size=2048"

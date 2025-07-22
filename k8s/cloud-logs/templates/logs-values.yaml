@@ -1,0 +1,17 @@
+clusterName: Kubernetes-Verbatim-PRO
+env:
+    iamApiKey: emOszI8EP3fSSZ1PmUPm-ByuaC-MvXh7h9GxJySUioRC
+    iamMode: IAMAPIKey
+    ingestionHost: f053faef-5589-4f69-9b29-36b44e7b7409.ingress.eu-de.logs.cloud.ibm.com
+    ingestionPort: '443'
+image:
+    version: 1.4.1
+metadata:
+    name: logs-agent
+resources:
+    limits:
+        cpu: 100m
+        memory: 256Mi
+    requests:
+        cpu: 50m
+        memory: 128Mi

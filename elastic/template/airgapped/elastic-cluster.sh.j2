@@ -25,7 +25,7 @@ spec:
         spec:
           containers:
             - name: ${ES_CONTAINER_NAME}
-              image: image-registry.openshift-image-registry.svc:5000/${ES_NAMESPACE}/elasticsearch:${ES_VERSION}
+              image: image-registry.openshift-image-registry.svc:5000/elastic/elasticsearch:${ES_VERSION}
               resources:
                 requests:
                   memory: ${ES_CONTAINER_REQUEST_MEMORY}

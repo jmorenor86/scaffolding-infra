@@ -1,0 +1,13 @@
+{
+    "license": {
+        "uid": "4be3a93f-48c7-4249-98cb-5a8b3756302e",
+        "type": "trial",
+        "issue_date_in_millis": 1697414400000,
+        "expiry_date_in_millis": 1798761599999,
+        "max_nodes": 100,
+        "issued_to": "International Business Machines Corporation (non-production environments)",
+        "issuer": "API",
+        "signature": "AAAAAwAAAA3ed0SaJt6XmTUBlBdJAAABmC9ZN0hjZDBGYnVyRXpCOW5Bb3FjZDAxOWpSbTVoMVZwUzRxVk1PSmkxaktJRVl5MUYvUWh3bHZVUTllbXNPbzBUemtnbWpBbmlWRmRZb25KNFlBR2x0TXc2K2p1Y1VtMG1UQU9TRGZVSGRwaEJGUjE3bXd3LzRqZ05iLzRteWFNekdxRGpIYlFwYkJiNUs0U1hTVlJKNVlXekMrSlVUdFIvV0FNeWdOYnlESDc3MWhlY3hSQmdKSjJ2ZTcvYlBFOHhPQlV3ZHdDQ0tHcG5uOElCaDJ4K1hob29xSG85N0kvTWV3THhlQk9NL01VMFRjNDZpZEVXeUtUMXIyMlIveFpJUkk2WUdveEZaME9XWitGUi9WNTZVQW1FMG1DenhZU0ZmeXlZakVEMjZFT2NvOWxpZGlqVmlHNC8rWVVUYzMwRGVySHpIdURzKzFiRDl4TmM1TUp2VTBOUlJZUlAyV0ZVL2kvVk10L0NsbXNFYVZwT3NSU082dFNNa2prQ0ZsclZ4NTltbU1CVE5lR09Bck93V2J1Y3c9PQAAAQAHC8tgIMt85dcbcVY/eQ1L4ymPaYGjo/+V7QVkKi0BMw6V8yYEPPEnQZcjSNh8UwLkdLOwEbsdzcqLqiT9cU9tpQDo7upQXbho1ozHgO+hG4twnhbchLhyViFa1JUpRt9lmYHfZP3ecL/VwzN7Ed9lpdP3zHkKTVTo03tpBfqauHVMR5dCF8tzxn7YB6ghfiWxVlREgBgngUlV7w0bnqEEaEHkCiRpqrpqMs1qynGA5nMnLEKt/dS9o4EX40JKVFbj29Bee1/kY0iKIh5e2Igne8SF+oOKajLQu2+NBo2jQZ8FWilj6XUbun5UEcyV+gNreuVrL9Gc9R5TWyBP2gpK",
+        "start_date_in_millis": 1697414400000
+    }
+}
